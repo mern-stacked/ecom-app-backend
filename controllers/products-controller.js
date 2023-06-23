@@ -24,11 +24,9 @@ const createProducts = async (req, res, next) => {
 
 // List Products
 const listProducts = async (req, res, next) => {
-   
-   let products; 
 
    try{
-     products = await Product.find()
+     let products = await Product.find();
      res.status(200).json(products);
    }catch(err){
     res.status(500).json({
