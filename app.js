@@ -1,8 +1,12 @@
 const express = require('express');
+
 const app = express();
 const morgan = require('morgan');
+require('dotenv').config(); 
+const connectDB = require('./mongoConnect');
 
-require('dotenv').config();
+connectDB();
+
 const api = process.env.API_URL;
 
 const PORT = 3000 ;
@@ -36,6 +40,5 @@ app.post(`${api}/products`, (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(api)
     console.log(`The port is up on port: ${PORT}`);
 })
