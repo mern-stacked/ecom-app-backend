@@ -1,5 +1,7 @@
 const express = require('express');
 
+const productRoute = require('./routes/products-route');
+
 const app = express();
 const morgan = require('morgan');
 require('dotenv').config(); 
@@ -19,6 +21,9 @@ app.use(express.json());
 
 // Middleware to log api request made from frontend
 app.use(morgan('tiny'));
+
+// Registering the imported routes as a middleware
+app.use(`${api}/products`, productRoute);
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
