@@ -8,5 +8,8 @@ router.post('/', categoryController.createCategories);
 // List Categories
 router.get('/list', categoryController.listCategories);
 
+//Delete Category bu Id
+router.delete('/:id', categoryController.deleteCategory);
+
 
 module.exports = router;
