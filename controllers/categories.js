@@ -1,5 +1,23 @@
 const Category = require('../models/category')
 
+// Create Categories
+const createCategories = async (req, res, next) => {
+    
+    const { name, icon, color } = req.body;
+    const category = new Category({ name, icon, color })
+    
+    try {
+        const createdProduct = await category.save();
+        res.status(201).json(createdProduct);
+    } catch (err) {
+        res.status(500).json({
+            error: err,
+            success: false
+        })
+    }
+}
+
+
 // List Categories
 const listCategories = async (req, res, next) => {
 
@@ -14,26 +32,8 @@ const listCategories = async (req, res, next) => {
     }
 }
 
-// Create Categories
-const createCategories = async (req, res, next) => {
-
-    const { name, icon, color } = req.body;
-    const category = new Category({ name, icon, color })
-
-    try {
-      const createdProduct = await category.save();
-      res.status(201).json(createdProduct);
-    } catch (err) {
-        res.status(500).json({
-            error: err,
-            success: false
-        })
-    }
-}
-
-
-// List Categories
-const listCategoriesById = async (req, res, next) => {
+// List Category By Id
+const listCategoryById = async (req, res, next) => {
 
     const categoryId = req.params.id;
 
@@ -48,6 +48,34 @@ const listCategoriesById = async (req, res, next) => {
     }
 }
 
+
+//Update Category By Id   
+const updateCategory = async (req, res, next) => {
+
+    const categoryId = req.params.id;
+    const { name, icon, color } = req.body;
+
+    try{
+        const category = await Category.findByIdAndUpdate(categoryId, { name, icon, color }, { new: true });
+        
+        if(category){
+            res.send(category);
+        } else {
+            res.status(404).json({
+            success: false,
+            message: 'No category found to update.'
+        })
+    }
+
+    } catch (err) {
+        res.status(500).json({
+            error: err,
+            success: false
+        })
+    }
+
+}
+
 // Delete Category By Id
 const deleteCategory = async (req, res, next) => {
 
@@ -59,7 +87,7 @@ const deleteCategory = async (req, res, next) => {
         if(category){
             return res.status(200).json({
                 success: true, 
-                message: 'The category is deleted'
+                message: 'Delete Successfull'
             });
         } else {
             return res.status(404).json({
@@ -78,5 +106,6 @@ const deleteCategory = async (req, res, next) => {
 
 exports.createCategories = createCategories;
 exports.listCategories = listCategories;
-exports.listCategoriesById = listCategoriesById;
+exports.listCategoryById = listCategoryById;
+exports.updateCategory = updateCategory;
 exports.deleteCategory = deleteCategory;
