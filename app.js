@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const productRoute = require('./routes/products');
+const categoryRoute = require('./routes/categories');
 
 const app = express();
 
@@ -12,6 +13,7 @@ const connectDB = require('./mongoConnect');
 connectDB();
 
 const api = process.env.API_URL;
+const PORT = process.env.PORT;
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -29,6 +31,9 @@ app.use(morgan('tiny'));
 
 // Registering the imported routes as a middleware
 app.use(`${api}/products`, productRoute);
+
+// Registering the imported routes as a middleware
+app.use(`${api}/categories`, categoryRoute);
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
