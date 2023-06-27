@@ -4,8 +4,8 @@ const Category = require('../models/category')
 const listCategories = async (req, res, next) => {
 
     try{
-        const products = await Category.find()
-        res.status(200).json(products);
+        const categories = await Category.find()
+        res.status(200).json(categories);
     } catch (err) {
         res.status(500).json({
             error: err,
@@ -27,6 +27,23 @@ const createCategories = async (req, res, next) => {
         res.status(500).json({
             error: err,
             success: false
+        })
+    }
+}
+
+
+// List Categories
+const listCategoriesById = async (req, res, next) => {
+
+    const categoryId = req.params.id;
+
+    try{
+        const category = await Category.findById(categoryId);
+        res.status(200).json(category);
+    } catch (err) {
+        res.status(500).json({
+            error: err,
+            success: false  
         })
     }
 }
@@ -59,6 +76,7 @@ const deleteCategory = async (req, res, next) => {
     }
 }
 
-exports.listCategories = listCategories;
 exports.createCategories = createCategories;
+exports.listCategories = listCategories;
+exports.listCategoriesById = listCategoriesById;
 exports.deleteCategory = deleteCategory;
