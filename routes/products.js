@@ -9,5 +9,7 @@ router.post('/', productsController.createProducts);
 // List all products
 router.get('/list', productsController.listProducts);
 
+// List all products
+router.get('/list/:id', productsController.listProductById);
 
 module.exports = router;
