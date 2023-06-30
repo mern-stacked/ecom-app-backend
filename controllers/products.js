@@ -40,7 +40,7 @@ const createProducts = async (req, res, next) => {
 const listProducts = async (req, res, next) => {
 
    try{
-     const products = await Product.find();
+     const products = await Product.find().populate('category');
      res.status(200).json(products);
    }catch(err){
     res.status(500).json({
@@ -57,7 +57,7 @@ const listProductById = async (req, res, next) => {
     const productId = req.params.id;
 
    try{
-     const product = await Product.findById(productId);
+     const product = await Product.findById(productId).populate('category');
      res.status(200).json(product);
    }catch(err){
     res.status(500).json({
