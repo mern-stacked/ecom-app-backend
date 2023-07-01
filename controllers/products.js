@@ -1,11 +1,13 @@
 const Product = require('../models/products');
+const Category = require('../models/category');
 
 // Create a Product
 const createProducts = async (req, res, next) => {
 
     const { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
 
-    if(!category) return res.status(500).send('Invalid Category');
+    const categoryFound = await Category.findById(category);
+    if(!categoryFound) return res.status(500).send('Invalid Category');
 
     const product = new Product({
         name,
@@ -54,7 +56,7 @@ const listProducts = async (req, res, next) => {
 // List Products By Id
 const listProductById = async (req, res, next) => {
 
-    const productId = req.params.id;
+    const productId = req.params.pid;
 
    try{
      const product = await Product.findById(productId).populate('category');
@@ -68,7 +70,54 @@ const listProductById = async (req, res, next) => {
 
 }
 
+//Update Product By Id   
+const updateProduct = async (req, res, next) => {
+
+  const ProductId = req.params.pid;
+  const { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
+
+  const categoryFound = await Category.findById(category);
+  if(!categoryFound) return res.status(500).send('Invalid Category');
+
+  try{
+      const product = await Product.findByIdAndUpdate( ProductId,
+         {
+          name,
+          description,
+          richDescription,
+          image,
+          images,
+          brand,
+          price,
+          category,
+          countInStock,
+          rating,
+          numReviews,
+          isFeatured,
+          dateCreated,
+        },
+        { new: true });
+      
+      if(product){
+          res.send(product);
+      } else {
+          res.status(404).json({
+          success: false,
+          message: 'No category found to update.'
+      })
+  }
+
+  } catch (err) {
+      res.status(500).json({
+          error: err,
+          success: false
+      })
+  }
+
+}
+
 
 exports.createProducts = createProducts;
 exports.listProducts = listProducts;
 exports.listProductById = listProductById;
+exports.updateProduct = updateProduct;
