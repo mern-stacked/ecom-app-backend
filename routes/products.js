@@ -15,4 +15,7 @@ router.get('/list/:pid', productsController.listProductById);
 // Update a product by pid 
 router.put('/update/:pid', productsController.updateProduct);
 
+// Delete a product by pid 
+router.delete('/delete/:pid', productsController.deleteProduct);
+
 module.exports = router;

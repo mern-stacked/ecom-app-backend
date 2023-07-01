@@ -81,22 +81,8 @@ const updateProduct = async (req, res, next) => {
 
   try{
       const product = await Product.findByIdAndUpdate( ProductId,
-         {
-          name,
-          description,
-          richDescription,
-          image,
-          images,
-          brand,
-          price,
-          category,
-          countInStock,
-          rating,
-          numReviews,
-          isFeatured,
-          dateCreated,
-        },
-        { new: true });
+         { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated },
+         { new: true });
       
       if(product){
           res.send(product);
@@ -116,8 +102,37 @@ const updateProduct = async (req, res, next) => {
 
 }
 
+// Delete Product By Id
+const deleteProduct = async (req, res, next) => {
+
+    const productId = req.params.pid;
+    
+    try{
+        const product = await Product.findByIdAndRemove(productId);
+        
+        if(product){
+            return res.status(200).json({
+                success: true, 
+                message: 'Delete Successfull'
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'No product found to delete'
+            })
+        }
+
+    } catch(err){
+        res.status(500).json({
+            error: err,
+            success: false
+        })
+    }
+}
+
 
 exports.createProducts = createProducts;
 exports.listProducts = listProducts;
 exports.listProductById = listProductById;
 exports.updateProduct = updateProduct;
+exports.deleteProduct = deleteProduct;
