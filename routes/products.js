@@ -9,7 +9,10 @@ router.post('/', productsController.createProducts);
 // List all products
 router.get('/list', productsController.listProducts);
 
-// List all products
-router.get('/list/:id', productsController.listProductById);
+// List a product by pid
+router.get('/list/:pid', productsController.listProductById);
+
+// Update a product by pid 
+router.put('/update/:pid', productsController.updateProduct);
 
 module.exports = router;
