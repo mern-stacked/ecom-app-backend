@@ -35,7 +35,7 @@ const listCategories = async (req, res, next) => {
 // List Category By Id
 const listCategoryById = async (req, res, next) => {
 
-    const categoryId = req.params.id;
+    const categoryId = req.params.cid;
 
     try{
         const category = await Category.findById(categoryId);
@@ -52,7 +52,7 @@ const listCategoryById = async (req, res, next) => {
 //Update Category By Id   
 const updateCategory = async (req, res, next) => {
 
-    const categoryId = req.params.id;
+    const categoryId = req.params.cid;
     const { name, icon, color } = req.body;
 
     try{
@@ -79,7 +79,7 @@ const updateCategory = async (req, res, next) => {
 // Delete Category By Id
 const deleteCategory = async (req, res, next) => {
 
-    const categoryId = req.params.id;
+    const categoryId = req.params.cid;
     
     try{
         const category = await Category.findByIdAndRemove(categoryId);

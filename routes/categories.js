@@ -9,13 +9,13 @@ router.post('/', categoryController.createCategories);
 router.get('/list', categoryController.listCategories);
 
 // List Category By Id
-router.get('/list/:id', categoryController.listCategoryById);
+router.get('/list/:cid', categoryController.listCategoryById);
 
 // Update Category By Id
-router.put('/update/:id', categoryController.updateCategory);
+router.put('/update/:cid', categoryController.updateCategory);
 
 //Delete Category bu Id
-router.delete('/delete/:id', categoryController.deleteCategory);
+router.delete('/delete/:cid', categoryController.deleteCategory);
 
 
 module.exports = router;
