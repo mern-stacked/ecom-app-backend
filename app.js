@@ -29,12 +29,24 @@ app.use(express.json());
 // Middleware to log api request made from frontend
 app.use(morgan('tiny'));
 
+
 // Registering the imported routes as a middleware
 app.use(`${api}/products`, productRoute);
 
 // Registering the imported routes as a middleware
 app.use(`${api}/categories`, categoryRoute);
 
+// Middleware for Error Handling
+app.use((error, req, res, next) => {
+    if(res.headerSent){
+        return next(error);
+    }
+    res.status(error.code || 500);
+    res.json({
+             message: error.message || 'An unknown error occurred!', 
+             success: error.success 
+             });
+});
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////

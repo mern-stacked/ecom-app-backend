@@ -1,9 +1,28 @@
 const express = require('express');
+const { check } =  require('express-validator');
+
 const categoryController = require('../controllers/categories');
+
 const router = express.Router();
 
 // Create Categories
-router.post('/', categoryController.createCategories);
+router.post('/', 
+            [
+                check('name')
+                 .not()
+                 .isEmpty(),
+                check('icon')
+                 .not()
+                 .isEmpty(),
+                check('color')
+                 .not()
+                 .isEmpty(),
+                check('image')
+                 .not()
+                 .isEmpty(),
+            ],
+            categoryController.createCategories
+           );
 
 // List Categories
 router.get('/list', categoryController.listCategories);

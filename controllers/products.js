@@ -1,13 +1,28 @@
+const { validationResult } =  require('express-validator');
+
+const HttpError = require('../models/http-error'); 
+
 const Product = require('../models/products');
 const Category = require('../models/category');
 
 // Create a Product
 const createProducts = async (req, res, next) => {
 
+    const errors = validationResult(req);
+    
+    if(!errors.isEmpty()){
+        return next (
+            new HttpError('Inputs cannot be empty!', 422)
+        );
+    }
+
     const { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
 
     const categoryFound = await Category.findById(category);
-    if(!categoryFound) return res.status(500).send('Invalid Category');
+
+    if(!categoryFound) {
+        const error = new HttpError('Invalid Category', 500, false);
+        return next(error);    }
 
     const product = new Product({
         name,
@@ -30,10 +45,8 @@ const createProducts = async (req, res, next) => {
        await product.save();
        res.status(200).json(product) 
     } catch (err) {
-      res.status(500).json({
-          error: err,
-          success: false
-      })
+       const error = new HttpError('Creation of a Product failed', 500, false);
+        return next(error);
     }
 
 }
@@ -60,12 +73,18 @@ const listProductById = async (req, res, next) => {
 
    try{
      const product = await Product.findById(productId).populate('category');
-     res.status(200).json(product);
-   }catch(err){
-    res.status(500).json({
-        error: err,
-        success: false
-    })
+     // check to find whether the product id entered exists or fake generated one
+     if(product){
+        res.send(product);  // If pid exists/ not fake, return that product
+    } else {
+        res.status(404).json({ // If pid doesnot exist / fake, throw error
+            message: 'Product doesnot exist.',
+            success: false,
+      })
+    }
+   } catch(err){
+        const error = new HttpError('Product not found', 500, false);
+        return next(error);
    }
 
 }
@@ -89,15 +108,13 @@ const updateProduct = async (req, res, next) => {
       } else {
           res.status(404).json({
           success: false,
-          message: 'No category found to update.'
+          message: 'No product found to update.'
       })
   }
 
   } catch (err) {
-      res.status(500).json({
-          error: err,
-          success: false
-      })
+        const error = new HttpError('Product not found', 500, false);
+        return next(error);
   }
 
 }
@@ -123,10 +140,8 @@ const deleteProduct = async (req, res, next) => {
         }
 
     } catch(err){
-        res.status(500).json({
-            error: err,
-            success: false
-        })
+        const error = new HttpError('Product not found', 500, false);
+        return next(error);
     }
 }
 

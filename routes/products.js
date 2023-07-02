@@ -1,10 +1,24 @@
 const express = require('express');
+const { check } =  require('express-validator');
+
 const productsController = require('../controllers/products');
 
 const router = express.Router();
 
 // Create a Product
-router.post('/', productsController.createProducts);
+router.post('/',
+            [
+                check('name')
+                .not()
+                .isEmpty(),
+                check('description')
+                .not()
+                .isEmpty(),
+                check('countInStock')
+                .not()
+                .isEmpty()
+            ],
+            productsController.createProducts);
 
 // List all products
 router.get('/list', productsController.listProducts);

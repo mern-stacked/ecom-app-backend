@@ -1,19 +1,29 @@
+const { validationResult } =  require('express-validator');
+
+const HttpError = require('../models/http-error'); 
 const Category = require('../models/category')
 
 // Create Categories
 const createCategories = async (req, res, next) => {
+
+    const errors = validationResult(req);
     
-    const { name, icon, color } = req.body;
-    const category = new Category({ name, icon, color })
+    if(!errors.isEmpty()){
+        return next (
+            new HttpError('Inputs cannot be empty!', 422)
+        );
+    }
+    
+    const { name, icon, color, image } = req.body;  
+
+    const category = new Category({ name, icon, color, image });
     
     try {
         const createdProduct = await category.save();
         res.status(201).json(createdProduct);
     } catch (err) {
-        res.status(500).json({
-            error: err,
-            success: false
-        })
+        const error = new HttpError('Creation of a category failed', 500, false);
+        return next(error);
     }
 }
 
@@ -25,10 +35,8 @@ const listCategories = async (req, res, next) => {
         const categories = await Category.find()
         res.status(200).json(categories);
     } catch (err) {
-        res.status(500).json({
-            error: err,
-            success: false  
-        })
+        const error = new HttpError('Failed to fetch the categories', 500, false);
+        return next(error);
     }
 }
 
@@ -39,13 +47,19 @@ const listCategoryById = async (req, res, next) => {
 
     try{
         const category = await Category.findById(categoryId);
-        res.status(200).json(category);
-    } catch (err) {
-        res.status(500).json({
-            error: err,
-            success: false  
-        })
-    }
+        // check to find whether the category id entered exists or fake generated one
+        if(category){
+            res.send(category);  // If cid exists/ not fake, return that category
+        } else {
+            res.status(404).json({ // If cid doesnot exist / fake, throw error
+                message: 'Category doesnot exist.',
+                success: false,
+          })
+        }
+     } catch (err) {  // If the categoryId not a mongo format id or shortened.
+        const error = new HttpError('Category not found', 500, false);
+        return next(error);
+     }
 }
 
 
@@ -62,16 +76,14 @@ const updateCategory = async (req, res, next) => {
             res.send(category);
         } else {
             res.status(404).json({
-            success: false,
-            message: 'No category found to update.'
-        })
-    }
+                message: 'No category found to update.',
+                success: false,
+           })
+         }
 
     } catch (err) {
-        res.status(500).json({
-            error: err,
-            success: false
-        })
+        const error = new HttpError('Category not found', 500, false);
+        return next(error);
     }
 
 }
@@ -97,10 +109,8 @@ const deleteCategory = async (req, res, next) => {
         }
 
     } catch(err){
-        res.status(500).json({
-            error: err,
-            success: false
-        })
+        const error = new HttpError('Category not found', 500, false);
+        return next(error);
     }
 }
 
