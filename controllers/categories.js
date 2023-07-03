@@ -19,8 +19,8 @@ const createCategories = async (req, res, next) => {
     const category = new Category({ name, icon, color, image });
     
     try {
-        const createdProduct = await category.save();
-        res.status(201).json(createdProduct);
+        const createdCategory = await category.save();
+        res.status(201).json(createdCategory);
     } catch (err) {
         const error = new HttpError('Creation of a category failed', 500, false);
         return next(error);
