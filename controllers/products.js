@@ -154,9 +154,28 @@ const productCount = async (req, res, next) => {
         if(productCount){
             res.status(200).send({productCount})
         }
-        
+
     } catch(err) {
         const error = new HttpError('No Products Found', 500, false);
+        return next(error);
+    }
+ 
+ }
+
+ // Fetch featured product
+const featuredProducts = async (req, res, next) => {
+
+    const count = req.params.count ? req.params.count : 0;
+
+    try{
+        const featProducts = await Product.find({ isFeatured : true }).limit(+count);
+
+        if(featProducts){
+            res.status(200).send({featProducts})
+        }
+        
+    } catch(err) {
+        const error = new HttpError('No Featured Products Found', 500, false);
         return next(error);
     }
  
@@ -168,3 +187,4 @@ exports.listProductById = listProductById;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
 exports.productCount = productCount;
+exports.featuredProducts = featuredProducts;

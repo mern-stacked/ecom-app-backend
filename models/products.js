@@ -14,7 +14,7 @@ const productSchema = new Schema({
     countInStock: { type: Number, require: true },
     rating: { type: Number, default: 0 },
     numReviews: { type: Number, default: 0 },
-    isFeatuerd: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false },
     dateCreated: { type: Date, default: Date.now }
 })
 

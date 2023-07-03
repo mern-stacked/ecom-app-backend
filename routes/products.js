@@ -35,4 +35,7 @@ router.delete('/delete/:pid', productsController.deleteProduct);
 // Product Count
 router.get('/count', productsController.productCount);
 
+// Featured Products
+router.get('/featured/:count', productsController.featuredProducts);
+
 module.exports = router;
