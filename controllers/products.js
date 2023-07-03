@@ -54,8 +54,14 @@ const createProducts = async (req, res, next) => {
 // List Products
 const listProducts = async (req, res, next) => {
 
+   let categoryFilter = {}; 
+   // filter and fetch products by category using query params
+   if(req.query.categories){
+    categoryFilter = { category: req.query.categories.split(',') }
+   }
+
    try{
-     const products = await Product.find().populate('category');
+     const products = await Product.find(categoryFilter).populate('category');
      res.status(200).json(products);
    }catch(err){
     res.status(500).json({
