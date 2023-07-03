@@ -32,4 +32,7 @@ router.put('/update/:pid', productsController.updateProduct);
 // Delete a product by pid 
 router.delete('/delete/:pid', productsController.deleteProduct);
 
+// Product Count
+router.get('/count', productsController.productCount);
+
 module.exports = router;

@@ -145,9 +145,26 @@ const deleteProduct = async (req, res, next) => {
     }
 }
 
+// Fetch Product Count
+const productCount = async (req, res, next) => {
+
+    try{
+        const productCount = await Product.countDocuments();
+
+        if(productCount){
+            res.status(200).send({productCount})
+        }
+        
+    } catch(err) {
+        const error = new HttpError('No Products Found', 500, false);
+        return next(error);
+    }
+ 
+ }
 
 exports.createProducts = createProducts;
 exports.listProducts = listProducts;
 exports.listProductById = listProductById;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
+exports.productCount = productCount;
