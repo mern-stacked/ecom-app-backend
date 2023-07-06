@@ -2,6 +2,7 @@ const { validationResult } =  require('express-validator');
 
 const HttpError = require('../models/http-error'); 
 
+// Import Models
 const Product = require('../models/products');
 const Category = require('../models/category');
 
@@ -12,7 +13,7 @@ const createProducts = async (req, res, next) => {
     
     if(!errors.isEmpty()){
         return next (
-            new HttpError('Inputs cannot be empty!', 422)
+            new HttpError('Please fill in the required fields!', 422)
         );
     }
 
@@ -24,22 +25,7 @@ const createProducts = async (req, res, next) => {
         const error = new HttpError('Invalid Category', 500, false);
         return next(error);    }
 
-    const product = new Product({
-        name,
-        description,
-        richDescription,
-        image,
-        images,
-        brand,
-        price,
-        category,
-        countInStock,
-        rating,
-        numReviews,
-        isFeatured,
-        dateCreated,
-    }); 
-
+    const product = new Product({ name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated }); 
     
     try{
        await product.save();
