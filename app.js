@@ -2,8 +2,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 
+// Route Imports
 const productRoute = require('./routes/products');
 const categoryRoute = require('./routes/categories');
+const usersRoute = require('./routes/users');
 
 const app = express();
 
@@ -35,6 +37,9 @@ app.use(`${api}/products`, productRoute);
 
 // Registering the imported routes as a middleware
 app.use(`${api}/categories`, categoryRoute);
+
+// Registering the imported routes as a middleware
+app.use(`${api}/users`, usersRoute);
 
 // Middleware for Error Handling
 app.use((error, req, res, next) => {

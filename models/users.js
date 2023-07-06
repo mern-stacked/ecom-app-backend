@@ -15,10 +15,10 @@ const userSchema = Schema({
     country: { type: String, default: '' }
 });
 
-productSchema.virtual('id').get(function () {
+userSchema.virtual('id').get(function () {
     return this._id.toHexString();
 })
 
-productSchema.set('toJSON', { virtuals: true });
+userSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('User', userSchema);
