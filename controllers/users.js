@@ -5,6 +5,19 @@ const HttpError = require('../models/http-error');
 // Import Models
 const User = require('../models/users');
 
+// Fetch all users
+const fetchUsers = async (req, res, next) => {
+
+    try{
+       const users = await User.find();
+       res.status(201).send(users);
+    } catch(err){
+       const error = new HttpError('No users found.');
+       return next(error);
+    }
+
+}
+
 // Register a user
 const registerUser = async (req, res, next) => {
     const errors = validationResult(req);
@@ -30,3 +43,4 @@ const registerUser = async (req, res, next) => {
 }
 
 exports.registerUser = registerUser;
+exports.fetchUsers = fetchUsers;

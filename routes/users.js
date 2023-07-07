@@ -4,7 +4,10 @@ const { check } = require('express-validator');
 const userController = require('../controllers/users');
 const router = express.Router();
 
-// Register a new User
+// Fetch all users
+router.get('/', userController.fetchUsers); 
+
+// Register a new user
 router.post('/register',
             [
                 check('name')
