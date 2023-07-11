@@ -58,5 +58,41 @@ const signUp = async (req, res, next) => {
 
 }
 
+// Login a user
+const login = async (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        const error = new HttpError('Please fill in the required fields!', 422, false );
+        return next(error);
+    }
+
+    const { email, password } = req.body;
+
+    let userExists;
+    try{
+       userExists = await User.findOne({ email });
+    } catch(err){
+        const error = new HttpError('Unable to signin, Please try again later', 500, false);
+        return next(error);
+    }
+
+    if(!userExists){
+        const error = new HttpError('Invalid password or email', 422, false);
+        return next(error);
+    }
+
+    try {
+        await userExists.comparePassword(password);
+        const token = jwt.sign({ userId: userExists._id }, 'MY_SECRET_KEY' );
+        res.status(201).json( {  user: userExists.toObject({ getters: true }), token } );
+    } catch(err){
+        const error = new HttpError('Invalid password or email', 500, false);
+        return next(error);
+    }
+}
+
 exports.signUp = signUp;
+exports.login = login;
 exports.fetchUsers = fetchUsers;

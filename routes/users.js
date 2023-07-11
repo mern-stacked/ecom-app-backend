@@ -27,4 +27,16 @@ router.post('/register',
             ],
             userController.signUp);
 
+// Login a new user
+router.post('/login', 
+            [
+              check('email')
+                .not()
+                .isEmpty(),
+              check('password')
+              .not()
+              .isEmpty(),
+            ],
+userController.login);
+
 module.exports = router;
