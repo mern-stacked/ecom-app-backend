@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
 
 const HttpError = require('../models/http-error');
 
@@ -12,29 +13,44 @@ const fetchUsers = async (req, res, next) => {
        const users = await User.find();
        res.status(201).send(users);
     } catch(err){
-       const error = new HttpError('No users found.');
+       const error = new HttpError('No users found.', 500, false );
        return next(error);
     }
 
 }
 
 // Register a user
-const registerUser = async (req, res, next) => {
+const signUp = async (req, res, next) => {
+
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
         return next (
-            new HttpError('Please fill in the required fields!', 422)
+            new HttpError('Please fill in the required fields!', 422, false )
         );
     }
 
-    const { name, email, passwordHash, phone, isAdmin, street, apartment, city, zip, country } = req.body;
+    const { name, email, password, phone, isAdmin, street, apartment, city, zip, country } = req.body;
 
-    const user = new User({ name, email, passwordHash, phone, isAdmin, street, apartment, city, zip, country });
+    let userExists;
+    try{
+       userExists = await User.findOne({ email });
+    } catch(err){
+        const error = new HttpError('Registration failed', 500, false);
+        return next(error);
+    }
+
+    if(userExists){
+        const error = new HttpError('User exists already, Please Login instead', 422, false);
+        return next(error);
+    }
+
+    const createdUser = new User({ name, email, password, phone, isAdmin, street, apartment, city, zip, country });
 
     try{
-        await user.save();
-        res.status(200).send(user);
+        await createdUser.save();
+        const token = jwt.sign({ userId: createdUser._id }, 'MY_SECRET_KEY' );
+        res.status(201).json( {  user: createdUser.toObject({ getters: true }), token } );
     } catch (err) {
         const error = new HttpError('User Registeration Failed', 500, false);
         return next(error);
@@ -42,5 +58,5 @@ const registerUser = async (req, res, next) => {
 
 }
 
-exports.registerUser = registerUser;
+exports.signUp = signUp;
 exports.fetchUsers = fetchUsers;

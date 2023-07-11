@@ -18,8 +18,11 @@ router.post('/register',
                   .isEmpty(),
                 check('phone')
                   .not()
-                  .isEmpty()
+                  .isEmpty(),
+                check('password')
+                 .not()
+                 .isEmpty(),
             ],
-            userController.registerUser);
+            userController.signUp);
 
 module.exports = router;
