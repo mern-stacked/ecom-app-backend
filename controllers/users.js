@@ -35,6 +35,7 @@ const fetchUserById = async (req, res, next) => {
 const signUp = async (req, res, next) => {
 
     const errors = validationResult(req);
+    const secret = process.env.SECRET_KEY;
 
     if(!errors.isEmpty()){
         return next (
@@ -61,7 +62,7 @@ const signUp = async (req, res, next) => {
 
     try{
         await createdUser.save();
-        const token = jwt.sign({ userId: createdUser._id }, 'MY_SECRET_KEY' );
+        const token = jwt.sign({ userId: createdUser._id }, secret, { expiresIn: '1d'} );
         res.status(201).json( {  user: createdUser.toObject({ getters: true }), token } );
     } catch (err) {
         const error = new HttpError('User Registeration Failed', 500, false);
@@ -74,6 +75,7 @@ const signUp = async (req, res, next) => {
 const login = async (req, res, next) => {
 
     const errors = validationResult(req);
+    const secret = process.env.SECRET_KEY;
 
     if(!errors.isEmpty()){
         const error = new HttpError('Please fill in the required fields!', 422, false );
@@ -97,7 +99,7 @@ const login = async (req, res, next) => {
 
     try {
         await userExists.comparePassword(password);
-        const token = jwt.sign({ userId: userExists._id }, 'MY_SECRET_KEY' );
+        const token = jwt.sign({ userId: userExists._id }, secret, { expiresIn: '1d' } );
         res.status(201).json( {  user: userExists.toObject({ getters: true }), token } );
     } catch(err){
         const error = new HttpError('Invalid password or email', 500, false);
