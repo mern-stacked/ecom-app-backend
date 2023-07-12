@@ -23,7 +23,8 @@ const createProducts = async (req, res, next) => {
 
     if(!categoryFound) {
         const error = new HttpError('Invalid Category', 500, false);
-        return next(error);    }
+        return next(error);  
+    }
 
     const product = new Product({ name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated }); 
     
