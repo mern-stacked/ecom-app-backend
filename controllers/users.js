@@ -99,7 +99,7 @@ const login = async (req, res, next) => {
 
     try {
         await userExists.comparePassword(password);
-        const token = jwt.sign({ userId: userExists._id }, secret, { expiresIn: '1d' } );
+        const token = jwt.sign({ userId: userExists._id, isAdmin: userExists.isAdmin }, secret, { expiresIn: '1d' } );
         res.status(201).json( {  user: userExists.toObject({ getters: true }), token } );
     } catch(err){
         const error = new HttpError('Invalid password or email', 500, false);
