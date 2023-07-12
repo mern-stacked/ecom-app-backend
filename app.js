@@ -41,11 +41,23 @@ app.use(authJwt());
 // Middleware for Error Handling
 // app.use(errorHandler);
 
+
+
+// Registering the imported routes as a middleware
+app.use(`${api}/products`, productRoute);
+
+// Registering the imported routes as a middleware
+app.use(`${api}/categories`, categoryRoute);
+
+// Registering the imported routes as a middleware
+app.use(`${api}/users`, usersRoute);
+
+// Middleware for error handling
 app.use((err, req, res, next) => {
 
     // JWT Authentication Error
     if(err.name === 'UnauthorizedError'){
-        return res.status(500).json({ message: 'The user is not authorized', success: false })
+        return res.status(500).json({ message: 'The user is not authorized', success: false });
     }
 
      // Validation Error
@@ -58,22 +70,9 @@ app.use((err, req, res, next) => {
     }
 
     // Default to General: 500 Server Error
-    res.status(err.code || 500);
-    res.json({
-             message: err.message || 'An unknown error occurred!', 
-             success: err.success 
-             });
+    res.status(err.code || 500).json({ message: err.message || 'An unknown error occurred!', success: err.success });
 
 })
-
-// Registering the imported routes as a middleware
-app.use(`${api}/products`, productRoute);
-
-// Registering the imported routes as a middleware
-app.use(`${api}/categories`, categoryRoute);
-
-// Registering the imported routes as a middleware
-app.use(`${api}/users`, usersRoute);
 
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
