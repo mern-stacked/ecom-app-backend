@@ -10,7 +10,7 @@ const User = require('../models/users');
 const fetchUsers = async (req, res, next) => {
 
     try{
-       const users = await User.find();
+       const users = await User.find().select('-password');
        res.status(201).send(users);
     } catch(err){
        const error = new HttpError('No users found.', 500, false );
@@ -22,7 +22,7 @@ const fetchUsers = async (req, res, next) => {
 const fetchUserById = async (req, res, next) => {
 
     try{
-       const users = await User.findById(req.params.uid);
+       const users = await User.findById(req.params.uid).select('-password');
        res.status(201).send(users);
     } catch(err){
        const error = new HttpError('No users found.', 500, false );
