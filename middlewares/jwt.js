@@ -5,7 +5,8 @@ function authJwt() {
 
     return jwt({
         secret,
-        algorithms: ['HS256']
+        algorithms: ['HS256'],
+        isRevoked: isRevoked
     }).unless({
         path : [
             { url: /\/api\/v1\/products(.*)/ , methods: [ 'GET', 'OPTIONS'] },
@@ -14,6 +15,16 @@ function authJwt() {
             '/api/v1/users/login'
         ]
     })
+}
+
+async function isRevoked(req, payload) {
+    // if our user makes a authorized api call and is not admin then reject the token
+    if(payload.isAdmin == false){
+        // not a admin : reject the token
+        return true;
+    } 
+    // admin
+    return false;
 }
 
 module.exports = authJwt;
