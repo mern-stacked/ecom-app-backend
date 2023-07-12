@@ -9,6 +9,9 @@ const router = express.Router();
 // Fetch all users
 router.get('/', requireAuth, userController.fetchUsers); 
 
+//Fetch by userid
+router.get('/:uid', requireAuth, userController.fetchUserById);
+
 // Register a new user
 router.post('/register',
             [

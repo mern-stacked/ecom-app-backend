@@ -16,6 +16,18 @@ const fetchUsers = async (req, res, next) => {
        const error = new HttpError('No users found.', 500, false );
        return next(error);
     }
+}
+
+// Fetch user by id
+const fetchUserById = async (req, res, next) => {
+
+    try{
+       const users = await User.findById(req.params.uid);
+       res.status(201).send(users);
+    } catch(err){
+       const error = new HttpError('No users found.', 500, false );
+       return next(error);
+    }
 
 }
 
@@ -96,3 +108,4 @@ const login = async (req, res, next) => {
 exports.signUp = signUp;
 exports.login = login;
 exports.fetchUsers = fetchUsers;
+exports.fetchUserById = fetchUserById;
