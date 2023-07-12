@@ -2,11 +2,12 @@ const express = require('express');
 const { check } =  require('express-validator');
 
 const categoryController = require('../controllers/categories');
+const requireAuth = require('../middlewares/requireAuth');
 
 const router = express.Router();
 
 // Create Categories
-router.post('/', 
+router.post('/', requireAuth,
             [
                 check('name')
                  .not()
@@ -31,10 +32,9 @@ router.get('/list', categoryController.listCategories);
 router.get('/list/:cid', categoryController.listCategoryById);
 
 // Update Category By Id
-router.put('/update/:cid', categoryController.updateCategory);
+router.put('/update/:cid', requireAuth, categoryController.updateCategory);
 
 //Delete Category bu Id
-router.delete('/delete/:cid', categoryController.deleteCategory);
-
+router.delete('/delete/:cid', requireAuth, categoryController.deleteCategory);
 
 module.exports = router;
