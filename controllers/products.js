@@ -1,4 +1,5 @@
 const { validationResult } =  require('express-validator');
+const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-error'); 
 
@@ -8,7 +9,6 @@ const Category = require('../models/category');
 
 // Create a Product
 const createProducts = async (req, res, next) => {
-
     const errors = validationResult(req);
     
     if(!errors.isEmpty()){
@@ -17,10 +17,12 @@ const createProducts = async (req, res, next) => {
     }
 
     const file = req.file;
+
     if(!file) {
         const error = new HttpError('Please import the product image', 400, false);
         return next(error); 
     }
+
     const fileName = req.file.filename;
     const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
 
@@ -94,29 +96,48 @@ const listProductById = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
 
   const ProductId = req.params.pid;
-  const { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
+  const { name, description, richDescription, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
+ 
+  // Invalid Product Id
+  if(!mongoose.isValidObjectId(ProductId)) {
+    const error = new HttpError('Invalid Product Id', 400, false);
+    return next(error); 
+  }
 
-  const categoryFound = await Category.findById(category);
-  if(!categoryFound) return res.status(500).send('Invalid Category');
+  // Invalid Category
+ const categoryFound = await Category.findById(category);
+ if(!categoryFound) {
+   const error = new HttpError('Invalid Category', 400, false);
+   return next(error); 
+ }
+   // Invalid Product
+   const product = await Product.findById(ProductId);
+   if(!product) {
+     const error = new HttpError('Invalid Product', 400, false);
+     return next(error); 
+   }
 
-  try{
-      const product = await Product.findByIdAndUpdate( ProductId,
-         { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated },
-         { new: true });
+   //Update Image
+   const file = req.file;
+   let imagePath; 
+
+   if(file){
+     const fileName = file.filename;
+     const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
+     imagePath = `${basePath}${fileName}`
+   } else {
+    imagePath = product.image;
+   }
+
+  
+    const updatedProduct = await Product.findByIdAndUpdate( ProductId,
+    { name, description, richDescription, image: `${imagePath}`, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated },
+    { new: true });
       
-      if(product){
-          res.send(product);
-      } else {
-          res.status(404).json({
-          success: false,
-          message: 'No product found to update.'
-      })
-  }
-
-  } catch (err) {
-        const error = new HttpError('Product not found', 500, false);
-        return next(error);
-  }
+    if(!updatedProduct) {
+        return res.status(500).json({ success: false, message: 'The product cannot be updated.'})
+    }   
+    res.send(updateProduct);
 
 }
 
@@ -182,6 +203,38 @@ const featuredProducts = async (req, res, next) => {
  
  }
 
+ // Upload Multiple Gallery images 
+  const uploadMultipleGalleryImages = async (req, res, next) => {
+
+    const ProductId = req.params.pid;
+   
+        // Invalid Product Id
+    //    if(!mongoose.isValidObjectId(req.params.id)) {
+    //     const error = new HttpError('Invalid Product Id', 400, false);
+    //     return next(error); 
+    //   }
+
+  const files = req.files;
+  let imagesPath = [];
+  const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
+
+    if(files){
+        files.map(file => {
+            imagesPath.push(`${basePath}${file.filename}`)
+        })
+    }
+
+    const product = await Product.findByIdAndUpdate( ProductId,
+    { images: imagesPath },
+    { new: true });
+
+    if(!product) return res.status(500).json({ success: false, message: 'The product cannot be updated.'})
+            
+    res.send(product);
+
+}
+
+
 exports.createProducts = createProducts;
 exports.listProducts = listProducts;
 exports.listProductById = listProductById;
@@ -189,3 +242,4 @@ exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
 exports.productCount = productCount;
 exports.featuredProducts = featuredProducts;
+exports.uploadMultipleGalleryImages = uploadMultipleGalleryImages;

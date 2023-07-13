@@ -30,7 +30,7 @@ router.get('/list', productsController.listProducts);
 router.get('/list/:pid', productsController.listProductById);
 
 // Update a product by pid 
-router.put('/update/:pid', productsController.updateProduct);
+router.put('/update/:pid', uploadOptions.single('image'), productsController.updateProduct);
 
 // Delete a product by pid 
 router.delete('/delete/:pid', productsController.deleteProduct);
@@ -40,5 +40,8 @@ router.get('/count', productsController.productCount);
 
 // Featured Products
 router.get('/featured/:count', productsController.featuredProducts);
+
+ // Upload Multiple Gallery images 
+ router.put('/gallery-images/:pid', uploadOptions.array('images', 10), productsController.uploadMultipleGalleryImages);
 
 module.exports = router;
