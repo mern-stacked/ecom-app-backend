@@ -2,15 +2,15 @@ const express = require('express');
 const { check } = require('express-validator');
 
 const userController = require('../controllers/users');
-const requireAuth = require('../middlewares/requireAuth');
+// const requireAuth = require('../middlewares/requireAuth');
 
 const router = express.Router();
 
 // Fetch all users
-router.get('/', requireAuth, userController.fetchUsers); 
+router.get('/', userController.fetchUsers); 
 
 //Fetch by userid
-router.get('/:uid', requireAuth, userController.fetchUserById);
+router.get('/:uid', userController.fetchUserById);
 
 // Register a new user
 router.post('/register',
@@ -41,5 +41,14 @@ router.post('/login',
               .isEmpty(),
             ],
 userController.login);
+
+// User Count
+router.get('/count', userController.userCount); 
+
+// Update a user
+router.put('/update/:uid', userController.updateUser);
+
+// Delete a user
+router.delete('/delete/:uid', userController.deleteUser);
 
 module.exports = router;

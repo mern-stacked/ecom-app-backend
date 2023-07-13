@@ -107,7 +107,81 @@ const login = async (req, res, next) => {
     }
 }
 
+ //Update User By Id   
+const updateUser = async (req, res, next) => {
+
+    const userId = req.params.uid;
+    const { name, email, password, phone, isAdmin, street, apartment, city, zip, country } = req.body;
+
+  
+    try{
+        const user = await User.findByIdAndUpdate( userId,
+            { name, email, password, phone, isAdmin, street, apartment, city, zip, country },
+            { new: true });
+        
+        if(user){
+            res.send(user);
+        } else {
+            res.status(404).json({
+            success: false,
+            message: 'No user found to update.'
+        })
+    }
+  
+    } catch (err) {
+          const error = new HttpError('User not found', 500, false);
+          return next(error);
+    }
+  
+  }
+  
+  // Delete User By Id
+  const deleteUser = async (req, res, next) => {
+  
+      const userId = req.params.uid;
+      
+      try{
+          const user = await User.findByIdAndRemove(userId);
+          
+          if(user){
+              return res.status(200).json({
+                  success: true, 
+                  message: 'Delete Successfull'
+              });
+          } else {
+              return res.status(404).json({
+                  success: false,
+                  message: 'No user found to delete'
+              })
+          }
+  
+      } catch(err){
+          const error = new HttpError('User not found', 500, false);
+          return next(error);
+      }
+  }
+
+// Fetch User Count
+const userCount = async (req, res, next) => {
+
+    try{
+        const count = await User.countDocuments();
+
+        if(count){
+            res.status(200).send({count});
+        }
+
+    } catch(err) {
+        const error = new HttpError('No Users Found', 500, false);
+        return next(error);
+    }
+ 
+ }
+
 exports.signUp = signUp;
 exports.login = login;
+exports.userCount = userCount;
 exports.fetchUsers = fetchUsers;
+exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
 exports.fetchUserById = fetchUserById;
