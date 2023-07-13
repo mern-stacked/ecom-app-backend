@@ -1,12 +1,15 @@
 const express = require('express');
+
 const { check } =  require('express-validator');
 
 const productsController = require('../controllers/products');
 // const requireAuth = require('../middlewares/requireAuth');
+const uploadOptions = require('../middlewares/fileUpload');
 const router = express.Router();
 
 // Create a Product
 router.post('/',
+            uploadOptions.single('image'),
             [
                 check('name')
                 .not()

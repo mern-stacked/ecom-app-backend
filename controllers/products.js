@@ -12,22 +12,25 @@ const createProducts = async (req, res, next) => {
     const errors = validationResult(req);
     
     if(!errors.isEmpty()){
-        return next (
-            new HttpError('Please fill in the required fields!', 422)
-        );
+        const error = new HttpError('Please fill in the required fields', 422, false);
+        return next(error);  
     }
 
-    const { name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
+    const fileName = req.file.filename;
+    const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
+
+    const { name, description, richDescription, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
 
     const categoryFound = await Category.findById(category);
 
     if(!categoryFound) {
-        const error = new HttpError('Invalid Category', 500, false);
+        const error = new HttpError('Invalid Category', 400, false);
         return next(error);  
+
     }
 
-    const product = new Product({ name, description, richDescription, image, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated }); 
-    
+    const product = new Product({ name, description, richDescription, image: `${basePath}${fileName}`, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated }); 
+
     try{
        await product.save();
        res.status(200).json(product) 
