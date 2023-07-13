@@ -24,7 +24,7 @@ const createProducts = async (req, res, next) => {
     }
 
     const fileName = req.file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
     const { name, description, richDescription, images, brand, price, category, countInStock, rating, numReviews, isFeatured, dateCreated } = req.body;
 
@@ -123,7 +123,7 @@ const updateProduct = async (req, res, next) => {
 
    if(file){
      const fileName = file.filename;
-     const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
+     const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
      imagePath = `${basePath}${fileName}`
    } else {
     imagePath = product.image;
@@ -216,7 +216,7 @@ const featuredProducts = async (req, res, next) => {
 
   const files = req.files;
   let imagesPath = [];
-  const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
+  const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
     if(files){
         files.map(file => {

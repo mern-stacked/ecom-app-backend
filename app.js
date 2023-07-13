@@ -38,9 +38,11 @@ app.use(morgan('tiny'));
 // Middleware to generate JWT
 app.use(authJwt());
 
+// Mark public/uploads as static
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+
 // Middleware for Error Handling
 // app.use(errorHandler);
-
 
 
 // Registering the imported routes as a middleware
