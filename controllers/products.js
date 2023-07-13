@@ -16,6 +16,11 @@ const createProducts = async (req, res, next) => {
         return next(error);  
     }
 
+    const file = req.file;
+    if(!file) {
+        const error = new HttpError('Please import the product image', 400, false);
+        return next(error); 
+    }
     const fileName = req.file.filename;
     const basePath = `${req.protocol}://${req.get('host')}/public/upload`;
 
