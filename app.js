@@ -72,7 +72,7 @@ app.use((err, req, res, next) => {
     }
 
     // Default to General: 500 Server Error
-    res.status(err.code || 500).json({ message: err.message || 'An unknown error occurred!', success: err.success });
+     return res.status(err.code || 500).json({ message: err.message || 'An unknown error occurred!', success: err.success });
 
 })
 
