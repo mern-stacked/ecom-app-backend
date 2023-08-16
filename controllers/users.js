@@ -25,7 +25,7 @@ const fetchUserById = async (req, res, next) => {
        const users = await User.findById(req.params.uid).select('-password');
        res.status(201).send(users);
     } catch(err){
-       const error = new HttpError('No users found.', 500, false );
+       const error = new HttpError('No users found!', 500, false );
        return next(error);
     }
 
@@ -107,7 +107,7 @@ const login = async (req, res, next) => {
     }
 }
 
- //Update User By Id   
+//Update User By Id   
 const updateUser = async (req, res, next) => {
 
     const userId = req.params.uid;
@@ -133,10 +133,10 @@ const updateUser = async (req, res, next) => {
           return next(error);
     }
   
-  }
+}
   
-  // Delete User By Id
-  const deleteUser = async (req, res, next) => {
+// Delete User By Id
+const deleteUser = async (req, res, next) => {
   
       const userId = req.params.uid;
       
@@ -159,29 +159,33 @@ const updateUser = async (req, res, next) => {
           const error = new HttpError('User not found', 500, false);
           return next(error);
       }
-  }
+}
 
 // Fetch User Count
 const userCount = async (req, res, next) => {
 
     try{
-        const count = await User.countDocuments();
+        const count = await User.count();
 
-        if(count){
-            res.status(200).send({count});
+        if(!count){
+            const error = new HttpError('No Users Found', 500, false);
+            return next(error);
         }
+        
+        res.status(200).send({count});
 
-    } catch(err) {
-        const error = new HttpError('No Users Found', 500, false);
+
+    } catch(err) { 
+        const error = new HttpError('Something went wrong', 500, false);
         return next(error);
     }
  
  }
 
+exports.fetchUsers = fetchUsers;
+exports.fetchUserById = fetchUserById;
 exports.signUp = signUp;
 exports.login = login;
-exports.userCount = userCount;
-exports.fetchUsers = fetchUsers;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
-exports.fetchUserById = fetchUserById;
+exports.userCount = userCount;

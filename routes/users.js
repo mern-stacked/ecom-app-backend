@@ -12,6 +12,9 @@ router.get('/', userController.fetchUsers);
 //Fetch by userid
 router.get('/:uid', userController.fetchUserById);
 
+// User Count
+router.get('/get/count', userController.userCount);
+
 // Register a new user
 router.post('/register',
             [
@@ -42,13 +45,12 @@ router.post('/login',
             ],
 userController.login);
 
-// User Count
-router.get('/count', userController.userCount); 
 
 // Update a user
 router.put('/update/:uid', userController.updateUser);
 
 // Delete a user
 router.delete('/delete/:uid', userController.deleteUser);
+
 
 module.exports = router;
