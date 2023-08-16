@@ -36,7 +36,7 @@ router.put('/update/:pid', uploadOptions.single('image'), productsController.upd
 router.delete('/delete/:pid', productsController.deleteProduct);
 
 // Product Count
-router.get('/count', productsController.productCount);
+router.get('/get/count', productsController.productCount);
 
 // Featured Products
 router.get('/featured/:count', productsController.featuredProducts);
