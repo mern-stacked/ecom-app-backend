@@ -6,6 +6,7 @@ const cors = require('cors');
 const productRoute = require('./routes/products');
 const categoryRoute = require('./routes/categories');
 const usersRoute = require('./routes/users');
+const ordersRoute = require('./routes/orders');
 
 // Middleware Imports
 const authJwt = require('./middlewares/jwt');
@@ -53,6 +54,9 @@ app.use(`${api}/categories`, categoryRoute);
 
 // Registering the imported routes as a middleware
 app.use(`${api}/users`, usersRoute);
+
+// Registering the imported routes as a middleware
+app.use(`${api}/orders`, ordersRoute );
 
 // Middleware for error handling
 app.use((err, req, res, next) => {
